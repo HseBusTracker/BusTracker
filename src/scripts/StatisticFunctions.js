@@ -1,5 +1,6 @@
 const BUS_NAME = "bus_name";
 const BUS_VALUE = "bus_value";
+const BUS_CONDITION = "bus_condition";
 
 function get_cookie ( cookie_name ) {
     let results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
@@ -77,7 +78,9 @@ function set_bus_statistic(bus_statistic) {
     set_cookie(BUS_VALUE, strValue.slice(0, -1), 2042, 12, 12);
 }
 
-function update_bus_statistic( bus_name ) {
+
+//Обновляет счётчик для текущего автобуса.
+export function update_bus_statistic( bus_name ) {
     let bus_statistic = get_bus_statistic();
 
     if(bus_statistic.has(bus_name))
@@ -101,5 +104,26 @@ function get_popular_buses(bus_uses){
     }
 
     return bus_array;
+}
+
+//сохраняет состояние
+//buses_selected - выбранные автобусы
+function save_condition(buses_selected){
+    let bus_string = "";
+    for(let name of buses_selected){
+        bus_string += name + ";";
+    }
+
+    set_cookie(BUS_CONDITION, bus_string.slice(0, -1), 2042, 12, 12);
+}
+
+//возращает список выбранных автобусов в прошлый раз. Если его нет, то вернёт null
+function get_condition(){
+    let buses_string = get_cookie(BUS_CONDITION);
+    let arrayName = buses_string.split(";");
+    if(arrayName == null || arrayName.length <= 0)
+        return null;
+
+    return arrayName;
 }
 
