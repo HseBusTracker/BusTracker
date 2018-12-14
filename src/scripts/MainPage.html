@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus tracker</title>
+    <link rel="stylesheet" type="text/css" href="BusTrackerStyles.css"/>
+    <script src="Helpers/UiHelper.js"></script>
+    <script src="Helpers/MapHelper.js"></script>
+</head>
+<body>
+<div class="sidebar" id="routes_menu">
+    <button class="sidebar_close_button sidebar_item" onclick="onCloseSidebarButtonCLick()"><b>Close x</b></button>
+    <button class="sidebar_item"><b>Автобус №1</b></button>
+    <button class="sidebar_item"><b>Автобус №2</b></button>
+    <button class="sidebar_item"><b>Автобус №3</b></button>
+</div>
+<button id="open_bar_button" class="map_button" onclick="onOpenSidebarButtonCLick()">
+    <img src="../images/menu.png" alt=""/>
+</button>
+<div id="map" style="width: 100%; height: 100%; padding: 0px"></div>
+<div style="display:none">
+    <div class="map_controls_group" id="right_bottom_group">
+        <button onclick="onCurrentLocationButtonClick()" class="map_button" title="Current location" aria-label="Current location"
+                type="button">
+            <img class="map_button_image" src="../images/location.png"/>
+        </button>
+        <button class="map_button" title="Scale plus" aria-label="Scale +" type="button">
+            <img class="map_button_image" src="../images/plus.png"/>
+        </button>
+        <button class="map_button" title="Scale minus" aria-label="Scale -" type="button">
+            <img class="map_button_image" src="../images/minus.png"/>
+        </button>
+    </div>
+    <div class="map_controls_group" id="right_top_group" class="map_buttons_group">
+        <button class="map_button" title="Show line" aria-label="Show routes" type="button">
+            <img class="map_button_image" src="../images/menu.png"/>
+        </button>
+    </div>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBChCOjzidFHJ3VQyF4m0ZRCj7T2t1kVhE&callback=initMap" async
+        defer></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+.map_button {
+    background-color: white;
+    height: 40px;
+    width: 40px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+    border-radius: 3px;
+    position: relative;
+}
+
+.map_button:hover {
+    background-color: lightgray;
+}
+
+.map_button:active {
+    background-color: dimgray;
+}
+
+.map_button_image {
+    height: 20px;
+    width: 20px;
+    position: center;
+    display: inline;
+}
+
+.map_controls_group {
+    user-select: none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 4px -1px;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: white;
+    margin: 0 10px 5px 0;
+}
+
+.sidebar {
+    height: 100%;
+    width: 200px;
+    background-color: white;
+    position: fixed;
+    z-index: 1;
+    overflow: auto;
+}
+
+@media (min-width: 900px) {
+    .sidebar {
+        display:block
+    }
+    .sidebar_close_button {
+        display: none;
+    }
+}
+
+.sidebar_item {
+    height: 30px;
+    width: 200px;
+    background-color: white;
+    position: relative;
+    border-radius: 2px;
+    border: none;
+    text-align: left;
+    font-size: 18px;
+    font-family: "Script MT Bold", serif;
+}
+
+.sidebar_item:hover {
+    background-color: lightgray;
+}
+
+/*.sidebar_close_button {
+    text-align: right !important;
+}*/
