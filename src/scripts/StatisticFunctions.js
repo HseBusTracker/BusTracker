@@ -2,16 +2,16 @@ const BUS_NAME = "bus_name";
 const BUS_VALUE = "bus_value";
 const BUS_CONDITION = "bus_condition";
 
-function get_cookie ( cookie_name ) {
+const get_cookie = function( cookie_name ) {
     let results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
 
     if ( results )
         return ( unescape ( results[2] ) );
     else
         return null;
-}
+};
 
-function set_cookie ( name, value, exp_y, exp_m, exp_d, path, domain, secure ) {
+const set_cookie = function( name, value, exp_y, exp_m, exp_d, path, domain, secure ) {
     let cookie_string = name + "=" + escape ( value );
 
     if ( exp_y )
@@ -30,20 +30,21 @@ function set_cookie ( name, value, exp_y, exp_m, exp_d, path, domain, secure ) {
         cookie_string += "; secure";
 
     document.cookie = cookie_string;
-}
+};
 
-function delete_cookie ( cookie_name ) {
+const delete_cookie = function( cookie_name ) {
     let cookie_date = new Date ( );  // Текущая дата и время
     cookie_date.setTime ( cookie_date.getTime() - 1 );
     document.cookie = cookie_name += "=; expires=" + cookie_date.toGMTString();
-}
+};
 
-function clear_bus_statistic() {
-    delete_cookie("bus_name");
-    delete_cookie("bus_value");
-}
+const clear_bus_statistic = function(){
+    delete_cookie(BUS_NAME);
+    delete_cookie(BUS_VALUE);
+    delete_cookie(BUS_CONDITION);
+};
 
-function get_bus_statistic() {
+const get_bus_statistic = function(){
     let bus_statistic = new Map();
     let strBusName = get_cookie(BUS_NAME);
 
@@ -63,9 +64,9 @@ function get_bus_statistic() {
     }
 
     return bus_statistic;
-}
+};
 
-function set_bus_statistic(bus_statistic) {
+const set_bus_statistic = function(bus_statistic) {
     let strName = "";
     let strValue = "";
 
@@ -76,24 +77,24 @@ function set_bus_statistic(bus_statistic) {
 
     set_cookie(BUS_NAME, strName.slice(0, -1), 2042, 12, 12);
     set_cookie(BUS_VALUE, strValue.slice(0, -1), 2042, 12, 12);
-}
+};
 
 
 //Обновляет счётчик для текущего автобуса.
-export function update_bus_statistic( bus_name ) {
+const update_bus_statistic = function( bus_id ) {
     let bus_statistic = get_bus_statistic();
 
-    if(bus_statistic.has(bus_name))
-        bus_statistic[bus_name]++;
+    if(bus_statistic.has(bus_id))
+        bus_statistic[bus_id]++;
     else
-        bus_statistic.set(bus_name, 1);
+        bus_statistic.set(bus_id, 1);
 
     set_bus_statistic(bus_statistic);
-}
+};
 
 //Возращает список популярных автобусов (избранное)
 //bus_uses - кол-во использований имени автобуса (при апдейте местоположения)/ Нижнее ограничение для вхождение в список
-function get_popular_buses(bus_uses){
+const get_popular_buses = function(bus_uses){
     let bus_array = [];
 
     let bus_statistic = get_bus_statistic();
@@ -104,26 +105,31 @@ function get_popular_buses(bus_uses){
     }
 
     return bus_array;
-}
+};
 
 //сохраняет состояние
 //buses_selected - выбранные автобусы
-function save_condition(buses_selected){
+const save_condition = function(buses_selected){
     let bus_string = "";
     for(let name of buses_selected){
         bus_string += name + ";";
     }
 
     set_cookie(BUS_CONDITION, bus_string.slice(0, -1), 2042, 12, 12);
-}
+};
 
 //возращает список выбранных автобусов в прошлый раз. Если его нет, то вернёт null
-function get_condition(){
+const get_condition = function(){
     let buses_string = get_cookie(BUS_CONDITION);
     let arrayName = buses_string.split(";");
     if(arrayName == null || arrayName.length <= 0)
-        return null;
+        return [];
 
     return arrayName;
-}
+};
+
+module.exports.update_bus_statistic = update_bus_statistic;
+module.exports.get_popular_buses = get_popular_buses;
+module.exports.save_condition = save_condition;
+module.exports.get_condition = get_condition;
 
