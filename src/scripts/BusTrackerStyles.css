@@ -8,7 +8,7 @@ body, html {
     height: 40px;
     width: 40px;
     border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
     border-radius: 3px;
     position: relative;
 }
@@ -40,7 +40,7 @@ body, html {
 .sidebar {
     height: 100%;
     width: 200px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.7);
     position: fixed;
     z-index: 1;
     overflow: auto;
@@ -48,16 +48,32 @@ body, html {
 
 @media (min-width: 900px) {
     .sidebar {
-        display:block
+        display: block !important;
     }
+
     .sidebar_close_button {
-        display: none;
+        display: none !important;
+    }
+
+    #open_bar_button {
+        display: none !important;
     }
 }
 
-.sidebar_item {
+.sidebar_close_button {
+    width: 180px;
+    alignment: left;
     height: 30px;
-    width: 200px;
+    position: relative;
+    border: none;
+    text-align: left;
+    font-size: 18px;
+    background-color: white;
+}
+
+/*.sidebar_item {
+    height: 30px;
+    width: 180px;
     background-color: white;
     position: relative;
     border-radius: 2px;
@@ -71,6 +87,72 @@ body, html {
     background-color: lightgray;
 }
 
+input:checked .sidebar_item {
+    background-color: lightgray;
+}*/
+
 /*.sidebar_close_button {
     text-align: right !important;
 }*/
+
+.sidebar_item {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.sidebar_item input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.sidebar_item:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.sidebar_item input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.sidebar_item input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.sidebar_item .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}

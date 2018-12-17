@@ -1,8 +1,8 @@
-var XMLHttpRequest = require('xhr2');
-var statisticFunctions = require('./StatisticFunctions.js');
+//var XMLHttpRequest = require('xhr2');
+//var statisticFunctions = require('./StatisticFunctions.js');
 
 const http_get_async = function(theUrl, callback){
-    let xmlHttp = new XMLHttpRequest();
+    let xmlHttp = new window.XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, true );
     xmlHttp.onload = function(e) {
         callback(xmlHttp.response);
@@ -16,7 +16,7 @@ const http_get_async = function(theUrl, callback){
 const get_bus_data_async = function(busID, callback){
     http_get_async('http://notnpat.ru/b'+busID+'.json', function (htmlText) {
         callback(JSON.parse(htmlText));
-        statisticFunctions.update_bus_statistic(busID);
+        update_bus_statistic(busID);
     });
 };
 
@@ -24,7 +24,7 @@ const get_bus_data_async = function(busID, callback){
 //Каждый элемент имеет следующие параметры: lat, lang
 const get_bus_way_async = function(bus_id, callback){
     http_get_async('http://notnpat.ru/p'+bus_id+'.json', function (htmlText) {
-        callback(JSON.parse(htmlText).points);
+        callback(bus_id, JSON.parse(htmlText).points);
     });
 };
 
@@ -40,8 +40,8 @@ const get_bus_list_async = function(callback){
 //Callback принимает один параметр - список автобусов([]).
 //Каждый элемент имеет следующие параметры: id, routeNumber, type, fromAtoB, hidden, routeInt
 const get_favorites_buses_async = function( minBusUses, callback ){
-    let bus_array = statisticFunctions.get_popular_buses(minBusUses);
-    get_bus_list(function (allBuses) {
+    let bus_array = get_popular_buses(minBusUses);
+    get_bus_list_async(function (allBuses) {
         let result_buses = [];
 
         for(let bus of all_buses){
@@ -56,18 +56,18 @@ const get_favorites_buses_async = function( minBusUses, callback ){
 //сохраняет выбранные автобусы.
 //buses_selected - формат "id1;id2;id3"
 const save_current_condition = function(buses_selected){
-    statisticFunctions.save_condition(buses_selected);
+    save_condition(buses_selected);
 };
 
 //возращает сохранённое состояние в куки
 //return value - []
 const get_previous_condition = function() {
-    return statisticFunctions.get_condition();
+    return get_condition();
 };
 
-module.exports.get_bus_data_async = get_bus_data_async;
+/*module.exports.get_bus_data_async = get_bus_data_async;
 module.exports.get_bus_way_async = get_bus_way_async;
 module.exports.get_bus_list_async = get_bus_list_async;
 module.exports.get_favorites_buses_async = get_favorites_buses_async;
 module.exports.save_current_condition = save_current_condition;
-module.exports.get_previous_condition = get_previous_condition;
+module.exports.get_previous_condition = get_previous_condition;*/

@@ -128,8 +128,8 @@ const get_condition = function(){
     return arrayName;
 };
 
-module.exports.update_bus_statistic = update_bus_statistic;
-module.exports.get_popular_buses = get_popular_buses;
-module.exports.save_condition = save_condition;
-module.exports.get_condition = get_condition;
+//module.exports.update_bus_statistic = update_bus_statistic;
+//module.exports.get_popular_buses = get_popular_buses;
+//module.exports.save_condition = save_condition;
+//module.exports.get_condition = get_condition;
 
