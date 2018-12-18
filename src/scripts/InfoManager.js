@@ -47,7 +47,6 @@ const get_bus_data_async = function(busID, callback){
                 resultList.push(tmpData);
         }
         callback(resultList);
-        update_bus_statistic(busID);
     });
 };
 
@@ -104,16 +103,17 @@ const get_favorites_buses_async = function( minBusUses, callback ){
 /**
  * Сохраняет выбранные автобусы
  * @param buses_selected - Array с id выбранных автобусов
+ * @param wayActivated - Активирован ли маршрут автобуса
  */
-const save_current_condition = function(buses_selected){
-    save_condition(buses_selected);
+const save_current_condition = function(buses_selected, wayActivated){
+    save_condition(buses_selected, wayActivated);
 };
 
 
 /**
  * возращает сохранённое состояние в куках в виде Array с id выбранных в пред. раз автобусов. Если состояние нет, то вернёт null
  *
- * @returns {Array}
+ * @returns {{arrayIDs: (*|string[]), wayActivated: boolean}}
  */
 const get_previous_condition = function() {
     return get_condition();

@@ -1,6 +1,16 @@
 const BUS_ID = "bus_name";
 const BUS_VALUE = "bus_value";
+const BUS_DATE_TIME = "bus_date_time";
 const BUS_CONDITION = "bus_condition";
+const WAY_ACTIVATED = "way_activated";
+
+const CONDITION_SAVE_TIME_TICKS = 1000 * 60 * 60 * 2;//2 часа
+const  FAVORITS_SAVE_TIME_TICKS = 1000 * 60 * 60 * 24 * 15;//15 Дней
+
+const BusStatisticData = function (value, dateTime) {
+    this.value = value;
+    this.dateTime = dateTime;
+};
 
 const get_cookie = function( cookie_name ) {
     let results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)' );
@@ -11,13 +21,12 @@ const get_cookie = function( cookie_name ) {
         return null;
 };
 
-const set_cookie = function( name, value, exp_y, exp_m, exp_d, path, domain, secure ) {
+const set_cookie = function( name, value, date, path = null, domain = null, secure = null ) {
     let cookie_string = name + "=" + escape ( value );
 
-    if ( exp_y )
+    if ( date )
     {
-        let expires = new Date ( exp_y, exp_m, exp_d );
-        cookie_string += "; expires=" + expires.toGMTString();
+        cookie_string += "; expires=" + date.toGMTString();
     }
 
     if ( path )
@@ -29,6 +38,7 @@ const set_cookie = function( name, value, exp_y, exp_m, exp_d, path, domain, sec
     if ( secure )
         cookie_string += "; secure";
 
+    console.log(cookie_string);
     document.cookie = cookie_string;
 };
 
@@ -41,58 +51,79 @@ const delete_cookie = function( cookie_name ) {
 const clear_bus_statistic = function(){
     delete_cookie(BUS_ID);
     delete_cookie(BUS_VALUE);
+    delete_cookie(BUS_DATE_TIME);
     delete_cookie(BUS_CONDITION);
+    delete_cookie(WAY_ACTIVATED);
 };
 
+/**
+ *
+ * Возращает актуальные данные. Убирает неподходящие по времени. Удаляет все куки, если произошёл сбой.
+ *
+ * @returns {Map<int, BusStatisticData>}
+ */
 const get_bus_statistic = function(){
-    let bus_statistic = new Map();
+    let busStatistic = new Map();
     let strBusID = get_cookie(BUS_ID);
 
     if (!strBusID)
-        return bus_statistic;
+        return busStatistic;
 
     let strBusValue = get_cookie(BUS_VALUE);
+    let strBusTime = get_cookie(BUS_DATE_TIME);
 
-    let arrayID = strBusID.split(";");
-    let arrayValue = strBusValue.split(";");
-
-    if(arrayID.length !== arrayValue.length)
+    let arrayID = strBusID.split("-");
+    let arrayValue = strBusValue.split("-");
+    let arrayTime = strBusTime.split("-");
+    if(arrayID.length !== arrayValue.length && arrayTime.length !== arrayID.length)
         clear_bus_statistic();
 
+    let timeLimit = new Date();
     for(let i = 0; i < arrayID.length; ++i){
-        bus_statistic.set(arrayID[i], arrayValue[i]);
+        let tmpDateTime = new Date(parseInt(arrayTime[i]));
+        if(tmpDateTime.getTime() >= timeLimit.getTime())
+            busStatistic.set(arrayID[i], new BusStatisticData(arrayValue[i], tmpDateTime));
     }
 
-    return bus_statistic;
+    return busStatistic;
 };
 
 const set_bus_statistic = function(bus_statistic) {
     let strName = "";
     let strValue = "";
+    let strDate = "";
 
     for(let [key, value] of bus_statistic){
-        strName += key + ";";
-        strValue += value + ";";
+        strName += key + "-";
+        strValue += value.value + "-";
+        strDate += value.dateTime.getTime() + "-";
     }
 
-    set_cookie(BUS_ID, strName.slice(0, -1), 2042, 12, 12);
-    set_cookie(BUS_VALUE, strValue.slice(0, -1), 2042, 12, 12);
+    let dateToDelete = new Date(Date.now() + FAVORITS_SAVE_TIME_TICKS);
+
+    set_cookie(BUS_ID, strName.slice(0, -1), dateToDelete);
+    set_cookie(BUS_VALUE, strValue.slice(0, -1), dateToDelete);
+    set_cookie(BUS_DATE_TIME, strDate.slice(0, -1), dateToDelete);
 };
 
 
 
 /**
- * Обновляет счётчик для текущего автобуса.
+ * Обновляет счётчик для текущего автобуса. Так же обновляет и дату последнего обновдения.
  *
  * @param bus_id
  */
 const update_bus_statistic = function( bus_id ) {
     let bus_statistic = get_bus_statistic();
+    let dateToDelete = new Date(Date.now() + FAVORITS_SAVE_TIME_TICKS);
 
-    if(bus_statistic.has(bus_id))
-        bus_statistic[bus_id]++;
-    else
-        bus_statistic.set(bus_id, 1);
+    if(bus_statistic.has(bus_id)) {
+        bus_statistic.get(bus_id).value++;
+        bus_statistic.get(bus_id).dateTime = dateToDelete;
+    }
+    else {
+        bus_statistic.set(bus_id, new BusStatisticData(1, dateToDelete));
+    }
 
     set_bus_statistic(bus_statistic);
 };
@@ -108,7 +139,7 @@ const get_popular_buses = function(bus_uses){
     let bus_statistic = get_bus_statistic();
 
     for(let [key,value] of bus_statistic){
-        if(value >= bus_uses)
+        if(value.value >= bus_uses)
             bus_array.push(key);
     }
 
@@ -117,32 +148,49 @@ const get_popular_buses = function(bus_uses){
 
 
 /**
- * сохраняет состояние
- *
+ * Сохраняет состояние
  * @param buses_selected - выбранные автобусы
+ * @param wayActivated - активирован ли маршрут
  */
-const save_condition = function(buses_selected){
+const save_condition = function(buses_selected, wayActivated){
     let bus_string = "";
-    for(let name of buses_selected){
-        bus_string += name + ";";
-    }
+    console.log(buses_selected);
 
-    set_cookie(BUS_CONDITION, bus_string.slice(0, -1), 2042, 12, 12);
+    for(let i = 0; i < buses_selected.length; ++i){
+        bus_string += buses_selected[i] + "-";
+    }
+    console.log(bus_string);
+
+    let dateToDelete = new Date(Date.now() + CONDITION_SAVE_TIME_TICKS);
+    console.log(dateToDelete);
+    set_cookie(BUS_CONDITION, bus_string.slice(0, -1), dateToDelete);
+    set_cookie(WAY_ACTIVATED, wayActivated, dateToDelete);
+
+    console.log(get_cookie(BUS_CONDITION));
 };
 
 /**
- * возращает список выбранных автобусов в прошлый раз. Если его нет, то вернёт null
- *
- * @returns {Array}
+ * Возращает список автобусов и флаг на активацию маршрута
+ * @returns {{arrayIDs: (*|string[]), wayActivated: boolean}}
  */
 const get_condition = function(){
     let buses_string = get_cookie(BUS_CONDITION);
-    if (buses_string == null) return [];
-    let arrayName = buses_string.split(";");
-    if(arrayName == null || arrayName.length <= 0)
-        return [];
 
-    return arrayName;
+    if(buses_string === null)
+        return {
+            arrayIDs : [],
+            wayActivated: false
+        };
+
+    let arrayName = buses_string.split("-");
+    if(arrayName == null || arrayName.length <= 0)
+        arrayName = [];
+
+    let wayActivated = (get_cookie(WAY_ACTIVATED) === 'true');
+    return {
+        arrayIDs : arrayName,
+        wayActivated: wayActivated
+    }
 };
 
 //module.exports.update_bus_statistic = update_bus_statistic;

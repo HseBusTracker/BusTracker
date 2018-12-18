@@ -5,7 +5,7 @@ let favoriteIds = [];
 
 init = () => {
     initMap();
-    selectedIds = get_previous_condition();
+    selectedIds = get_previous_condition().arrayIDs;
     initBuses();
     selectedIds.forEach(busId => updateBusPosition(busId));
 };
@@ -76,7 +76,7 @@ const onBusItemClick = (element) => {
         updateBusPosition(busId);
     }
 
-    save_current_condition(selectedIds);
+    save_current_condition(selectedIds, true);
 };
 
 const updateAllBusesPositions = () => {
