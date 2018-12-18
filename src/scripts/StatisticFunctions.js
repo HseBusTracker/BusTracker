@@ -137,6 +137,7 @@ const save_condition = function(buses_selected){
  */
 const get_condition = function(){
     let buses_string = get_cookie(BUS_CONDITION);
+    if (buses_string == null) return [];
     let arrayName = buses_string.split(";");
     if(arrayName == null || arrayName.length <= 0)
         return [];

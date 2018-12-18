@@ -13,7 +13,7 @@ const initMap = () => {
 
 const initMapControls = () => {
     //map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('right_bottom_group'));
-    //map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById('right_top_group'));
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById('right_top_group'));
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById('open_bar_button'));
     //document.getElementById('open_bar_button').style.display = "inline";
 };
@@ -41,7 +41,7 @@ const addBusMarker = (busId, label, position, angle) => {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
             scale: 3,
             rotation: angle,
-            labelOrigin: new google.maps.Point(7, 7)
+            labelOrigin: new google.maps.Point(10, 10)
         },
         map: map
     });

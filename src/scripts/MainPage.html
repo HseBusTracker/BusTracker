@@ -13,6 +13,11 @@
 <body>
 <div class="sidebar" id="routes_menu" style="display: none">
     <button class="sidebar_close_button sidebar_item" onclick="onCloseSidebarButtonCLick()"><b>x</b></button>
+    <label class="sidebar_item">
+        <b>Выбрать/снять всё</b>
+        <input type="checkbox" onclick="onSelectAllButtonClick()">
+        <span class="checkmark"></span>
+    </label>
     <div id="bus_container"></div>
 </div>
 <button id="open_bar_button" class="map_button" onclick="onOpenSidebarButtonCLick()">
@@ -34,7 +39,7 @@
         </button>
     </div>
     <div class="map_controls_group" id="right_top_group" class="map_buttons_group">
-        <button class="map_button" title="Show line" aria-label="Show routes" type="button">
+        <button class="map_button" title="Show line" aria-label="Show routes" type="button" onclick="onShowRoutesCheckedChanged()">
             <img class="map_button_image" src="../images/menu.png"/>
         </button>
     </div>

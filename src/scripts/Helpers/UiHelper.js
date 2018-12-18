@@ -1,26 +1,36 @@
 let selectedIds = [];
+let busCount = 0;
+let showRoutes = true;
+let favoriteIds = [];
 
 init = () => {
     initMap();
+    selectedIds = get_previous_condition();
     initBuses();
+    selectedIds.forEach(busId => updateBusPosition(busId));
 };
 
 initBuses = () => {
     get_bus_list_async((buses) => {
         let container = document.getElementById('bus_container');
+        busCount = buses.length;
         for (let i = 0; i < buses.length; i++) {
-            let input =  document.createElement('input');
+            let input = document.createElement('input');
             input.value = buses[i].id;
             input.type = 'checkbox';
             input.setAttribute('onClick', 'onBusItemClick(this)');
+            if (selectedIds.indexOf(buses[i].id.toString()) !== -1)
+                input.setAttribute('checked', 'checked');
 
-            let span =  document.createElement('span');
+
+            let span = document.createElement('span');
             span.classList.add('checkmark');
 
             let label = document.createElement('label');
             label.innerHTML = '<b>Автобус №' + buses[i].realName.trimEnd() + '</b>';
             label.appendChild(input);
             label.appendChild(span);
+            label.value = buses[i].id;
 
             label.classList.add('sidebar_item');
             container.appendChild(label);
@@ -59,15 +69,14 @@ const onBusItemClick = (element) => {
     let busId = element.value;
     if (selectedIds.indexOf(busId) !== -1) {
         selectedIds.splice(selectedIds.indexOf(busId), 1);
-        element.backgroundColor = 'white';
         removeRoute(busId);
         removeMarker(busId);
-        return;
+    } else {
+        selectedIds.push(busId);
+        updateBusPosition(busId);
     }
 
-    selectedIds.push(busId);
-    element.backgroundColor = 'lightgray';
-    updateBusPosition(busId);
+    save_current_condition(selectedIds);
 };
 
 const updateAllBusesPositions = () => {
@@ -77,9 +86,9 @@ const updateAllBusesPositions = () => {
     });
 };
 
-const updateBusPosition = (busId) =>{
+const updateBusPosition = (busId) => {
     get_bus_data_async(busId, setPositions);
-    if (!trySetRoute(busId))
+    if (showRoutes && !trySetRoute(busId))
         get_bus_way_async(busId, setWay);
 };
 
@@ -98,6 +107,49 @@ const setPositions = (data) => {
 
 const setWay = (busId, points) => {
     addRoute(busId, points);
+};
+
+const onShowRoutesCheckedChanged = () => {
+    showRoutes = !showRoutes;
+    if (showRoutes) {
+        selectedIds.forEach(busId => {
+            if (!trySetRoute(busId))
+                get_bus_way_async(busId, setWay);
+        });
+    } else {
+        removeAllRoutes();
+    }
+};
+
+const onSelectAllButtonClick = () => {
+    let container = document.getElementById('bus_container');
+
+    if (selectedIds.length === busCount) {
+        removeAllRoutes();
+        removeAllMarkers();
+        for (let i = 0; i < container.children.length; i++) {
+            let busItem = container.children[i];
+            let input = busItem.getElementsByTagName('input')[0];
+            input.removeAttribute('checked');
+        }
+        selectedIds = [];
+    } else {
+        for (let i = 0; i < container.children.length; i++) {
+            let busItem = container.children[i];
+            let input = busItem.getElementsByTagName('input')[0];
+
+            let busId = input.value;
+            if (selectedIds.indexOf(busId) === -1) {
+                input.setAttribute('checked', 'checked');
+                selectedIds.push(busId);
+                updateBusPosition(busId);
+            }
+        }
+    }
+};
+
+const onFavoriteButtonCLick = (busId) => {
+    favoriteIds.push(busId);
 };
 
 setInterval(updateAllBusesPositions, 30000);
