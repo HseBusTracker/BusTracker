@@ -1,4 +1,4 @@
-const BUS_NAME = "bus_name";
+const BUS_ID = "bus_name";
 const BUS_VALUE = "bus_value";
 const BUS_CONDITION = "bus_condition";
 
@@ -39,28 +39,28 @@ const delete_cookie = function( cookie_name ) {
 };
 
 const clear_bus_statistic = function(){
-    delete_cookie(BUS_NAME);
+    delete_cookie(BUS_ID);
     delete_cookie(BUS_VALUE);
     delete_cookie(BUS_CONDITION);
 };
 
 const get_bus_statistic = function(){
     let bus_statistic = new Map();
-    let strBusName = get_cookie(BUS_NAME);
+    let strBusID = get_cookie(BUS_ID);
 
-    if (!strBusName)
+    if (!strBusID)
         return bus_statistic;
 
     let strBusValue = get_cookie(BUS_VALUE);
 
-    let arrayName = strBusName.split(";");
+    let arrayID = strBusID.split(";");
     let arrayValue = strBusValue.split(";");
 
-    if(arrayName.length !== arrayValue.length)
+    if(arrayID.length !== arrayValue.length)
         clear_bus_statistic();
 
-    for(let i = 0; i < arrayName.length; ++i){
-        bus_statistic.set(arrayName[i], arrayValue[i]);
+    for(let i = 0; i < arrayID.length; ++i){
+        bus_statistic.set(arrayID[i], arrayValue[i]);
     }
 
     return bus_statistic;
@@ -75,12 +75,17 @@ const set_bus_statistic = function(bus_statistic) {
         strValue += value + ";";
     }
 
-    set_cookie(BUS_NAME, strName.slice(0, -1), 2042, 12, 12);
+    set_cookie(BUS_ID, strName.slice(0, -1), 2042, 12, 12);
     set_cookie(BUS_VALUE, strValue.slice(0, -1), 2042, 12, 12);
 };
 
 
-//Обновляет счётчик для текущего автобуса.
+
+/**
+ * Обновляет счётчик для текущего автобуса.
+ *
+ * @param bus_id
+ */
 const update_bus_statistic = function( bus_id ) {
     let bus_statistic = get_bus_statistic();
 
@@ -92,8 +97,11 @@ const update_bus_statistic = function( bus_id ) {
     set_bus_statistic(bus_statistic);
 };
 
-//Возращает список популярных автобусов (избранное)
-//bus_uses - кол-во использований имени автобуса (при апдейте местоположения)/ Нижнее ограничение для вхождение в список
+/**
+ * Возращает список популярных автобусов (избранное)/ Содержит ID автобусов.
+ * @param bus_uses - кол-во использований имени автобуса (при апдейте местоположения)/ Нижнее ограничение для вхождение в список
+ * @returns {Array}
+ */
 const get_popular_buses = function(bus_uses){
     let bus_array = [];
 
@@ -107,8 +115,12 @@ const get_popular_buses = function(bus_uses){
     return bus_array;
 };
 
-//сохраняет состояние
-//buses_selected - выбранные автобусы
+
+/**
+ * сохраняет состояние
+ *
+ * @param buses_selected - выбранные автобусы
+ */
 const save_condition = function(buses_selected){
     let bus_string = "";
     for(let name of buses_selected){
@@ -118,7 +130,11 @@ const save_condition = function(buses_selected){
     set_cookie(BUS_CONDITION, bus_string.slice(0, -1), 2042, 12, 12);
 };
 
-//возращает список выбранных автобусов в прошлый раз. Если его нет, то вернёт null
+/**
+ * возращает список выбранных автобусов в прошлый раз. Если его нет, то вернёт null
+ *
+ * @returns {Array}
+ */
 const get_condition = function(){
     let buses_string = get_cookie(BUS_CONDITION);
     let arrayName = buses_string.split(";");

@@ -18,7 +18,7 @@ initBuses = () => {
             span.classList.add('checkmark');
 
             let label = document.createElement('label');
-            label.innerHTML = '<b>Автобус №' + buses[i].routeNumber.trimEnd() + '</b>';
+            label.innerHTML = '<b>Автобус №' + buses[i].realName.trimEnd() + '</b>';
             label.appendChild(input);
             label.appendChild(span);
 
@@ -85,13 +85,13 @@ const updateBusPosition = (busId) =>{
 
 const setPositions = (data) => {
     for (let i = 0; i < data.length; i++) {
-        let busId = data[i].route.routeId;
-        let label = data[i].upe.lastPoint.datetimeString;
+        let busId = data[i].busName.id;
+        let label = data[i].dateTimeString;
         let position = {
-            lat: data[i].upe.lastPoint.lat,
-            lng: data[i].upe.lastPoint.lng
+            lat: data[i].latitude,
+            lng: data[i].longitude
         };
-        let angle = data[i].upe.lastPoint.angle;
+        let angle = data[i].angle;
         addBusMarker(busId, label, position, angle);
     }
 };
