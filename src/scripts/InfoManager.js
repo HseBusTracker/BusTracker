@@ -46,7 +46,7 @@ const get_bus_data_async = function(busID, callback){
             if(DeltaTime(tmpData.dateTime, nowTime) < TICKS_IN_HOUR)
                 resultList.push(tmpData);
         }
-        callback(tmpData);
+        callback(resultList);
         update_bus_statistic(busID);
     });
 };
