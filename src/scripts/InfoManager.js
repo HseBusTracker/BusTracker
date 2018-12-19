@@ -1,4 +1,5 @@
 const TICKS_IN_HOUR = 1000 * 60 * 60;
+
 const DeltaTime = function(left, right){
     return Math.abs(left.getTime() - right.getTime());
 };
@@ -18,6 +19,7 @@ const BusData = function(json){
     this.dateTime = new Date(json.upe.lastPoint.lastDatetime);
     this.dateTimeString = json.upe.lastPoint.datetimeString;
     this.regNumber = json.upe.regNumber;
+    this.speed = json.upe.lastPoint.speed;
 };
 
 const http_get_async = function(theUrl, callback){
