@@ -1,7 +1,6 @@
 let selectedIds = [];
 let busCount = 0;
 let showRoutes = true;
-let favoriteIds = [];
 
 init = () => {
     initMap();
@@ -9,6 +8,7 @@ init = () => {
     initBuses();
     initFavoriteBuses();
     selectedIds.forEach(busId => updateBusPosition(busId));
+    onCurrentLocationButtonClick();
 };
 
 initBuses = () => {
@@ -28,7 +28,7 @@ initBuses = () => {
             span.classList.add('checkmark');
 
             let label = document.createElement('label');
-            label.innerHTML = '<b>Автобус №' + buses[i].realName.trimEnd() + '</b>';
+            label.innerHTML = 'Автобус №' + buses[i].realName.trimEnd();
             label.appendChild(input);
             label.appendChild(span);
             label.value = buses[i].id;
@@ -40,8 +40,12 @@ initBuses = () => {
 };
 
 initFavoriteBuses = () => {
-    get_favorites_buses_async(5,(buses) => {
+    get_favorites_buses_async(5, (buses) => {
         let container = document.getElementById('bus_container_favorite');
+        if (buses.length === 0) {
+            document.getElementById("favorite").style.display = "none";
+            return;
+        }
         busCount = buses.length;
         for (let i = 0; i < buses.length; i++) {
             let input = document.createElement('input');
@@ -56,7 +60,7 @@ initFavoriteBuses = () => {
             span.classList.add('checkmark');
 
             let label = document.createElement('label');
-            label.innerHTML = '<b>Автобус №' + buses[i].realName.trimEnd() + '</b>';
+            label.innerHTML = 'Автобус №' + buses[i].realName.trimEnd();
             label.appendChild(input);
             label.appendChild(span);
             label.value = buses[i].id;
@@ -176,10 +180,6 @@ const onSelectAllButtonClick = () => {
             }
         }
     }
-};
-
-const onFavoriteButtonCLick = (busId) => {
-    favoriteIds.push(busId);
 };
 
 const onListCollapse = (list) => {

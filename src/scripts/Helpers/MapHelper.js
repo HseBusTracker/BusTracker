@@ -1,6 +1,7 @@
 let map;
 let markers = [];
 let routes = [];
+let currentLocationMarker = null;
 
 const initMap = () => {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -32,6 +33,21 @@ const updateMapCenter = (position) => {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     });
+    let latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    if (currentLocationMarker === null) {
+        currentLocationMarker = new google.maps.Marker({
+            position: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            },
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 4,
+            },
+            map: map
+        });
+    } else
+        currentLocationMarker.setPosition(latlng);
 };
 
 const addBusMarker = (busId, label, position, angle) => {
