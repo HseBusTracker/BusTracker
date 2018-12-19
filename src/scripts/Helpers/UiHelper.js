@@ -1,7 +1,7 @@
 let selectedIds = [];
-let busCount = 0;
 let showRoutes = true;
-let favoriteIds = [];
+let favoriteBuses = [];
+let allBuses = [];
 
 init = () => {
     initMap();
@@ -17,7 +17,7 @@ init = () => {
 initBuses = () => {
     get_bus_list_async((buses) => {
         let container = document.getElementById('bus_container_all');
-        busCount = buses.length;
+        allBuses = buses;
         for (let i = 0; i < buses.length; i++) {
             let span = document.createElement('span');
             span.classList.add('checkmark');
@@ -46,7 +46,7 @@ initFavoriteBuses = () => {
             return;
         }
 
-        favoriteIds = buses;
+        favoriteBuses = buses;
         busCount = buses.length;
         for (let i = 0; i < buses.length; i++) {
             let span = document.createElement('span');
@@ -107,6 +107,8 @@ const onBusItemClick = (element) => {
 
         if (favoriteElement != null)
             favoriteElement.getElementsByClassName('checkmark')[0].style.backgroundColor = '#eee';
+
+        document.getElementById('select_all_favorite')
     } else {
         selectedIds.push(busId);
         updateBusPosition(busId);
@@ -119,6 +121,7 @@ const onBusItemClick = (element) => {
             favoriteElement.getElementsByClassName('checkmark')[0].style.backgroundColor = '#2196F3';
     }
 
+    setSelectedAllButtons();
     save_current_condition(selectedIds, showRoutes);
 };
 
@@ -173,69 +176,44 @@ const onShowRoutesCheckedChanged = () => {
 };
 
 const onSelectAllButtonClick = () => {
-    let container = document.getElementById('bus_container_all');
+    let allChecked = selectedIds.length === allBuses.length;
 
-    if (selectedIds.length === busCount) {
-        removeAllRoutes();
-        removeAllMarkers();
-        for (let i = 0; i < container.children.length; i++) {
-            let busItem = container.children[i];
-            let checkmark = busItem.getElementsByClassName('checkmark')[0];
-            checkmark.style.backgroundColor = '#eee';
+    allBuses.forEach(bus => {
+        let favoriteItem = document.getElementById('favorite_' + bus.id);
+        let simpleItem = document.getElementById('all_' + bus.id);
+        setElementChecked(favoriteItem, !allChecked);
+        setElementChecked(simpleItem, !allChecked);
+        if (allChecked)
+            selectedIds.splice(selectedIds.indexOf(bus.id.toString()), 1);
+        else if (selectedIds.indexOf(bus.id.toString()) === -1)
+            selectedIds.push(bus.id.toString());
+    });
 
-            let busId = busItem.value;
-            if (favoriteIds.indexOf(busId) !== -1) {
-                let favoriteBusItem = document.getElementById('favorite_' + busId);
-                let favoriteCheckmark = favoriteBusItem.getElementsByClassName('checkmark')[0];
-                favoriteCheckmark.style.backgroundColor = '#eee';
-            }
-        }
-        selectedIds = [];
-    } else {
-        for (let i = 0; i < container.children.length; i++) {
-            let busItem = container.children[i];
-            let checkmark = busItem.getElementsByClassName('checkmark')[0];
-            let busId = busItem.value;
-
-            checkmark.style.backgroundColor = '#2196F3';
-            if (busId && selectedIds.indexOf(busId) === -1)
-                selectedIds.push(busId);
-
-            if (favoriteIds.indexOf(busId) !== -1) {
-                let favoriteBusItem = document.getElementById('favorite_' + busId);
-                let favoriteCheckmark = favoriteBusItem.getElementsByClassName('checkmark')[0];
-                favoriteCheckmark.style.backgroundColor = '#2196F3';
-            }
-        }
-    }
+    setSelectedAllButtons();
     updateAllBusesPositions();
 };
 
 const onSelectAllFavoriteClick = () => {
-    let container = document.getElementById('bus_container');
+    let allFavorite = true;
 
-    if (selectedIds.length === busCount) {
-        removeAllRoutes();
-        removeAllMarkers();
-        for (let i = 0; i < container.children.length; i++) {
-            let busItem = container.children[i];
-            let input = busItem.getElementsByTagName('input')[0];
-            input.removeAttribute('checked');
-        }
-        selectedIds = [];
-    } else {
-        for (let i = 0; i < container.children.length; i++) {
-            let busItem = container.children[i];
-            let input = busItem.getElementsByTagName('input')[0];
+    favoriteBuses.forEach(bus => {
+        if (selectedIds.indexOf(bus.id.toString()) === -1)
+            allFavorite = false;
+    });
 
-            let busId = input.value;
-            if (selectedIds.indexOf(busId) === -1) {
-                input.setAttribute('checked', 'checked');
-                selectedIds.push(busId);
-                updateBusPosition(busId);
-            }
-        }
-    }
+    favoriteBuses.forEach(bus => {
+        let favoriteItem = document.getElementById('favorite_' + bus.id);
+        let simpleItem = document.getElementById('all_' + bus.id);
+        setElementChecked(favoriteItem, !allFavorite);
+        setElementChecked(simpleItem, !allFavorite);
+        if (allFavorite)
+            selectedIds.splice(selectedIds.indexOf(bus.id.toString()), 1);
+        else if (selectedIds.indexOf(bus.id.toString()) === -1)
+            selectedIds.push(bus.id.toString());
+    });
+
+    setSelectedAllButtons();
+    updateAllBusesPositions();
 };
 
 const onListAllCollapse = () => {
@@ -252,6 +230,33 @@ const onListFavoriteCollapse = () => {
         list.style.display = "none";
     else
         list.style.display = "block";
+};
+
+const setElementChecked = (element, checked) => {
+    if (element === null) return;
+    let checkMark = element.getElementsByClassName('checkmark')[0];
+    if (checked)
+        checkMark.style.backgroundColor = '#2196F3';
+    else
+        checkMark.style.backgroundColor = '#eee';
+};
+
+const setSelectedAllButtons = () => {
+    let selectFavoriteButton = document.getElementById('select_all_favorite');
+    let selectButton = document.getElementById('select_all');
+
+    if (selectedIds.length === allBuses.length) {
+        setElementChecked(selectButton, true);
+        setElementChecked(selectFavoriteButton, true);
+    } else {
+        setElementChecked(selectButton, false);
+        let allFavorite = true;
+        favoriteBuses.forEach(bus => {
+            if (selectedIds.indexOf(bus.id.toString()) === -1)
+                allFavorite = false;
+        });
+        setElementChecked(selectFavoriteButton, allFavorite);
+    }
 };
 
 setInterval(updateAllBusesPositions, 30000);

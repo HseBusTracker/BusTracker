@@ -61,14 +61,11 @@ body, html {
 }
 
 .sidebar_close_button {
-    width: 180px;
-    alignment: left;
-    height: 30px;
-    position: relative;
-    border: none;
     text-align: left;
-    font-size: 18px;
-    background-color: white;
+    padding-right: 0 !important;
+    width: 180px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0);
 }
 
 .sidebar_item {
@@ -79,10 +76,6 @@ body, html {
     cursor: pointer;
     font-size: 18px;
     user-select: none;
-}
-
-.sidebar_item {
-    padding-left: 35px;
 }
 
 /* Hide the browser's default checkbox */

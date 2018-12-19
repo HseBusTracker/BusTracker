@@ -164,7 +164,7 @@ const get_top_favorites_buses = function(border_index){
     }
     values = values.sort(function(a,b){return b-a;});
 
-    let tmp_buses = get_popular_buses(values[border_index]);
+    let tmp_buses = get_popular_buses(values[border_index - 1]);
     if(tmp_buses.length > border_index * 2) {
         return get_popular_buses(values[border_index] + 1);
     }
@@ -197,7 +197,7 @@ const save_condition = function(buses_selected, wayActivated){
 const get_condition = function(){
     let buses_string = get_cookie(BUS_CONDITION);
 
-    if(buses_string === null)
+    if(buses_string === null || buses_string === "")
         return {
             arrayIDs : [],
             wayActivated: false
