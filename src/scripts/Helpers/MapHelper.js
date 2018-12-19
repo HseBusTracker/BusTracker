@@ -11,9 +11,7 @@ const initMap = () => {
         disableDefaultUI: true
     });
     initMapControls();
-    infoWindow = new google.maps.InfoWindow({
-        content: "Hello"
-    });
+    infoWindow = new google.maps.InfoWindow({});
 };
 
 const initMapControls = () => {
@@ -37,6 +35,11 @@ const updateMapCenter = (position) => {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     });
+
+    updateCurrentLocation(position);
+};
+
+const updateCurrentLocation = (position)=>{
     let latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     if (currentLocationMarker === null) {
         currentLocationMarker = new google.maps.Marker({
