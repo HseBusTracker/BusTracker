@@ -13,18 +13,29 @@
 <body>
 <div class="sidebar" id="routes_menu" style="display: none">
     <button class="sidebar_close_button sidebar_item" onclick="onCloseSidebarButtonCLick()"><b>x</b></button>
-    <div id="favorite" class="sidebar_item" onclick="onListCollapse(this)">
-        <b>Часто используемые</b>
-        <div id="bus_container_favorite"></div>
+
+    <div>
+        <div id="favorite_label" class="sidebar_item" onclick="onListFavoriteCollapse(this)">
+            <b>Часто используемые</b>
+        </div>
+        <div id="bus_container_favorite">
+            <label class="sidebar_item" onclick="onSelectAllButtonClick()">
+                <b>Выбрать/снять всё</b>
+                <span class="checkmark"></span>
+            </label>
+        </div>
     </div>
-    <div class="sidebar_item" onclick="onListCollapse(this)">
-        <b>Все</b>
-        <label class="sidebar_item">
-            <b>Выбрать/снять всё</b>
-            <input type="checkbox" onclick="onSelectAllButtonClick()">
-            <span class="checkmark"></span>
-        </label>
-        <div id="bus_container_all"></div>
+
+    <div>
+        <div class="sidebar_item" onclick="onListAllCollapse(this)">
+            <b>Все</b>
+        </div>
+        <div id="bus_container_all">
+            <label class="sidebar_item" onclick="onSelectAllButtonClick()">
+                <b>Выбрать/снять всё</b>
+                <span class="checkmark"></span>
+            </label>
+        </div>
     </div>
 </div>
 <button id="open_bar_button" class="map_button" onclick="onOpenSidebarButtonCLick()">

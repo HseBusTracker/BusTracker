@@ -60,9 +60,10 @@ const addBusMarker = (busId, label, position, angle, info) => {
         label: label,
         icon: {
             path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-            scale: 3,
+            scale: 4,
             rotation: angle,
-            labelOrigin: new google.maps.Point(10, 10)
+            labelOrigin: new google.maps.Point(7, 7),
+            backgroundColor: '#FFFFFF'
         },
         map: map
     });
@@ -118,7 +119,7 @@ const addRoute = (busId, points) => {
         geodesic: true,
         strokeColor: '#565656',
         strokeOpacity: 1.0,
-        strokeWeight: 2,
+        strokeWeight: 1,
         map: map
     });
     routes[busId] = route;

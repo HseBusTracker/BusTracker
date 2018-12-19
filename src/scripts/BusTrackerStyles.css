@@ -81,6 +81,10 @@ body, html {
     user-select: none;
 }
 
+.sidebar_item {
+    padding-left: 35px;
+}
+
 /* Hide the browser's default checkbox */
 .sidebar_item input {
     position: absolute;
@@ -100,25 +104,9 @@ body, html {
     background-color: #eee;
 }
 
-.sidebar_item:hover input ~ .checkmark {
-    background-color: #ccc;
-}
-
-.sidebar_item input:checked ~ .checkmark {
-    background-color: #2196F3;
-}
-
-.checkmark:after {
+.sidebar_item .checkmark:after {
     content: "";
     position: absolute;
-    display: none;
-}
-
-.sidebar_item input:checked ~ .checkmark:after {
-    display: block;
-}
-
-.sidebar_item .checkmark:after {
     left: 9px;
     top: 5px;
     width: 5px;
