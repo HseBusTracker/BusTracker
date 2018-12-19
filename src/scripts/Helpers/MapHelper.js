@@ -12,7 +12,9 @@ const initMap = () => {
 };
 
 const initMapControls = () => {
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('right_bottom_group'));
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('decrease_scale'));
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('increase_scale'));
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('current_location'));
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById('right_top_group'));
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById('open_bar_button'));
 };
