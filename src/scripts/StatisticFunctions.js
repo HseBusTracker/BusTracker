@@ -165,9 +165,8 @@ const get_top_favorites_buses = function(border_index){
     values = values.sort(function(a,b){return b-a;});
 
     let tmp_buses = get_popular_buses(values[border_index]);
-    let additional_number = 1;
-    while(tmp_buses.length > border_index * 2) {
-        tmp_buses = get_popular_buses(values[border_index] + additional_number++);
+    if(tmp_buses.length > border_index * 2) {
+        return get_popular_buses(values[border_index] + 1);
     }
 
     return tmp_buses;
