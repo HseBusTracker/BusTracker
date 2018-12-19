@@ -7,12 +7,41 @@ init = () => {
     initMap();
     selectedIds = get_previous_condition().arrayIDs;
     initBuses();
+    initFavoriteBuses();
     selectedIds.forEach(busId => updateBusPosition(busId));
 };
 
 initBuses = () => {
     get_bus_list_async((buses) => {
-        let container = document.getElementById('bus_container');
+        let container = document.getElementById('bus_container_all');
+        busCount = buses.length;
+        for (let i = 0; i < buses.length; i++) {
+            let input = document.createElement('input');
+            input.value = buses[i].id;
+            input.type = 'checkbox';
+            input.setAttribute('onClick', 'onBusItemClick(this)');
+            if (selectedIds.indexOf(buses[i].id.toString()) !== -1)
+                input.setAttribute('checked', 'checked');
+
+
+            let span = document.createElement('span');
+            span.classList.add('checkmark');
+
+            let label = document.createElement('label');
+            label.innerHTML = '<b>Автобус №' + buses[i].realName.trimEnd() + '</b>';
+            label.appendChild(input);
+            label.appendChild(span);
+            label.value = buses[i].id;
+
+            label.classList.add('sidebar_item');
+            container.appendChild(label);
+        }
+    });
+};
+
+initFavoriteBuses = () => {
+    get_favorites_buses_async(5,(buses) => {
+        let container = document.getElementById('bus_container_favorite');
         busCount = buses.length;
         for (let i = 0; i < buses.length; i++) {
             let input = document.createElement('input');
@@ -74,6 +103,7 @@ const onBusItemClick = (element) => {
     } else {
         selectedIds.push(busId);
         updateBusPosition(busId);
+        update_bus_statistic(busId);
     }
 
     save_current_condition(selectedIds, true);
@@ -150,6 +180,14 @@ const onSelectAllButtonClick = () => {
 
 const onFavoriteButtonCLick = (busId) => {
     favoriteIds.push(busId);
+};
+
+const onListCollapse = (list) => {
+    let childList = list.getElementsByTagName("div")[0];
+    if (childList.style.display !== "none")
+        childList.style.display = "none";
+    else
+        childList.style.display = "block";
 };
 
 setInterval(updateAllBusesPositions, 30000);

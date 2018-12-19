@@ -12,10 +12,9 @@ const initMap = () => {
 };
 
 const initMapControls = () => {
-    //map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('right_bottom_group'));
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('right_bottom_group'));
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById('right_top_group'));
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById('open_bar_button'));
-    //document.getElementById('open_bar_button').style.display = "inline";
 };
 
 const increaseScale = () => {
@@ -28,8 +27,8 @@ const decreaseScale = () => {
 
 const updateMapCenter = (position) => {
     map.setCenter({
-        lat: position.latitude,
-        lng: position.longitude
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
     });
 };
 

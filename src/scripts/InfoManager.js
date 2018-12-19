@@ -87,11 +87,11 @@ const get_bus_list_async = function(callback){
  */
 const get_favorites_buses_async = function( minBusUses, callback ){
     let bus_array = get_popular_buses(minBusUses);
-    get_bus_list_async(function (allBuses) {
+    get_bus_list_async(function (all_buses) {
         let result_buses = [];
 
         for(let bus of all_buses){
-            if(bus_array.contains(bus.id))
+            if(bus_array.indexOf(bus.id.toString()) !== -1)
                 result_buses.push(bus);
         }
 
