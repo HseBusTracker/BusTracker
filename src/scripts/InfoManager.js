@@ -83,10 +83,30 @@ const get_bus_list_async = function(callback){
 /**
  * Сам извлекает из кук все популярные автобусы и работает со список автобусов (BusName) которые входит в популярные
  * @param minBusUses нижний предел вхождения в list популярных автобусов
- * @param callback приинмает один параметр - массив автобусов (BusName)
+ * @param callback приинмает один параметр - массив автобусов (BusId)
  */
 const get_favorites_buses_async = function( minBusUses, callback ){
     let bus_array = get_popular_buses(minBusUses);
+    get_bus_list_async(function (all_buses) {
+        let result_buses = [];
+
+        for(let bus of all_buses){
+            if(bus_array.indexOf(bus.id.toString()) !== -1)
+                result_buses.push(bus);
+        }
+
+        callback(result_buses);
+    });
+};
+
+/**
+ * Работает с популярными автобусами
+ * @param border_index индекс элемента с которым сравнивать
+ * @param callback приинмает один параметр - массив автобусов (BusId)
+ * @returns {Array}
+ */
+const get_top_favorites_buses_async = function(border_index, callback){
+    let bus_array = get_top_favorites_buses(border_index);
     get_bus_list_async(function (all_buses) {
         let result_buses = [];
 

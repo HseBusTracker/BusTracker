@@ -38,7 +38,6 @@ const set_cookie = function( name, value, date, path = null, domain = null, secu
     if ( secure )
         cookie_string += "; secure";
 
-    console.log(cookie_string);
     document.cookie = cookie_string;
 };
 
@@ -82,7 +81,7 @@ const get_bus_statistic = function(){
     for(let i = 0; i < arrayID.length; ++i){
         let tmpDateTime = new Date(parseInt(arrayTime[i]));
         if(tmpDateTime.getTime() >= timeLimit.getTime())
-            busStatistic.set(arrayID[i], new BusStatisticData(arrayValue[i], tmpDateTime));
+            busStatistic.set(arrayID[i], new BusStatisticData(parseInt(arrayValue[i])  , tmpDateTime));
     }
 
     return busStatistic;
@@ -128,6 +127,7 @@ const update_bus_statistic = function( bus_id ) {
     set_bus_statistic(bus_statistic);
 };
 
+
 /**
  * Возращает список популярных автобусов (избранное)/ Содержит ID автобусов.
  * @param bus_uses - кол-во использований имени автобуса (при апдейте местоположения)/ Нижнее ограничение для вхождение в список
@@ -148,25 +148,47 @@ const get_popular_buses = function(bus_uses){
 
 
 /**
+ * Возращает популярные автобусы
+ * @param border_index индекс элемента с которым сравнивать
+ * @returns {Array}
+ */
+const get_top_favorites_buses = function(border_index){
+    let bus_statistic = get_bus_statistic();
+    let values = [];
+    let tmpDatas = Array.from(bus_statistic.values());
+    if(border_index > tmpDatas.length)
+        return [];
+
+    for(let i = 0; i < tmpDatas.length; ++i){
+        values.push(tmpDatas[i].value);
+    }
+    values = values.sort(function(a,b){return b-a;});
+
+    let tmp_buses = get_popular_buses(values[border_index]);
+    let additional_number = 1;
+    while(tmp_buses.length > border_index * 2) {
+        tmp_buses = get_popular_buses(values[border_index] + additional_number++);
+    }
+
+    return tmp_buses;
+};
+
+/**
  * Сохраняет состояние
  * @param buses_selected - выбранные автобусы
  * @param wayActivated - активирован ли маршрут
  */
 const save_condition = function(buses_selected, wayActivated){
     let bus_string = "";
-    console.log(buses_selected);
 
     for(let i = 0; i < buses_selected.length; ++i){
         bus_string += buses_selected[i] + "-";
     }
-    console.log(bus_string);
 
     let dateToDelete = new Date(Date.now() + CONDITION_SAVE_TIME_TICKS);
-    console.log(dateToDelete);
+
     set_cookie(BUS_CONDITION, bus_string.slice(0, -1), dateToDelete);
     set_cookie(WAY_ACTIVATED, wayActivated, dateToDelete);
-
-    console.log(get_cookie(BUS_CONDITION));
 };
 
 /**
