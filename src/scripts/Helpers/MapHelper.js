@@ -2,6 +2,7 @@ let map;
 let markers = [];
 let routes = [];
 let currentLocationMarker = null;
+let infoWindow = null;
 
 const initMap = () => {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -10,6 +11,9 @@ const initMap = () => {
         disableDefaultUI: true
     });
     initMapControls();
+    infoWindow = new google.maps.InfoWindow({
+        content: "Hello"
+    });
 };
 
 const initMapControls = () => {
@@ -50,7 +54,7 @@ const updateMapCenter = (position) => {
         currentLocationMarker.setPosition(latlng);
 };
 
-const addBusMarker = (busId, label, position, angle) => {
+const addBusMarker = (busId, label, position, angle, info) => {
     let marker = new google.maps.Marker({
         position: position,
         label: label,
@@ -61,6 +65,11 @@ const addBusMarker = (busId, label, position, angle) => {
             labelOrigin: new google.maps.Point(10, 10)
         },
         map: map
+    });
+    marker.addListener('click', () => {
+        infoWindow.close();
+        infoWindow.setContent(info);
+        infoWindow.open(map, marker);
     });
     if (!markers[busId])
         markers[busId] = [];
@@ -107,9 +116,9 @@ const addRoute = (busId, points) => {
     let route = new google.maps.Polyline({
         path: points,
         geodesic: true,
-        strokeColor: '#FF0000',
+        strokeColor: '#565656',
         strokeOpacity: 1.0,
-        strokeWeight: 3,
+        strokeWeight: 2,
         map: map
     });
     routes[busId] = route;
