@@ -116,7 +116,7 @@ const setPositions = (data) => {
         let busInfo = '<div>' +
             '<label><b>Маршрут №' + data[i].busName.realName.trim() + '</b><br>' +
             'Номер: <b>' + data[i].graficNumber + '</b><br>' +
-            'Скорость: <b>' + 0 + 'км/ч</b><br>' +
+            'Скорость: <b>' + data[i].speed + 'км/ч</b><br>' +
             'Номер автобуса: <b>' + data[i].regNumber + '</b><br>' +
             'Последнее обновление: <b>' + data[i].dateTimeString + '</b></label>' +
             '</div>';

@@ -157,7 +157,7 @@ const get_top_favorites_buses = function(border_index){
     let values = [];
     let tmpDatas = Array.from(bus_statistic.values());
     if(border_index > tmpDatas.length)
-        return [];
+        border_index = tmpDatas.length - 1;
 
     for(let i = 0; i < tmpDatas.length; ++i){
         values.push(tmpDatas[i].value);
