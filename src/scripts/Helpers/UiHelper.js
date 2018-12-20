@@ -1,9 +1,9 @@
 const onCurrentLocationButtonClick = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(updateMapCenter,
-            () => updateMapCenter({latitude: 56.28, longitude: 43.95}));
+            () => updateMapCenter({coords:{latitude: 56.28, longitude: 43.95}}));
     } else {
-        updateMapCenter({latitude: 56.28, longitude: 43.95});
+        updateMapCenter({coords:{latitude: 56.28, longitude: 43.95}});
     }
 };
 
